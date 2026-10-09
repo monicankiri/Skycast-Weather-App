@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Skycast | Weather Forecast</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <header class="app-header">
+        <a href="#" class="logo">Skycast</a>
+
+        <form id="search-form">
+            <input
+                type="text"
+                id="city-input"
+                placeholder="Search for a city..."
+                aria-label="Search for a city"
+            >
+
+            <button type="submit" id="search-button">
+                Search
+            </button>
+        </form>
+
+        <button id="location-button" type="button">
+            Use My Location
+        </button>
+    </header>
+
+    <main>
+        <!-- Current Weather -->
+        <section id="current-weather" aria-labelledby="location-name">
+            <div class="location-info">
+                <p id="location-name">Search for a location</p>
+                <p id="current-date"></p>
+            </div>
+
+            <div class="current-conditions">
+                <div id="weather-icon" aria-hidden="true">🌤️</div>
+
+                <h1 id="temperature">--°</h1>
+
+                <p id="weather-description">
+                    Weather conditions will appear here
+                </p>
+
+                <p id="feels-like">Feels like --°</p>
+
+                <div class="temperature-range">
+                    <span id="high-temperature">H: --°</span>
+                    <span id="low-temperature">L: --°</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hourly Forecast -->
+        <section class="weather-section" aria-labelledby="hourly-heading">
+            <h2 id="hourly-heading">Hourly Forecast</h2>
+
+            <div id="hourly-forecast" class="hourly-container">
+                <p>Hourly forecasts will appear here.</p>
+            </div>
+        </section>
+
+        <!-- Weather Details -->
+        <section class="weather-section" aria-labelledby="details-heading">
+            <h2 id="details-heading">Weather Details</h2>
+
+            <div class="weather-details">
+                <article class="weather-card">
+                    <h3>Humidity</h3>
+                    <p id="humidity">--%</p>
+                </article>
+
+                <article class="weather-card">
+                    <h3>Wind</h3>
+                    <p id="wind-speed">-- km/h</p>
+                </article>
+
+                <article class="weather-card">
+                    <h3>UV Index</h3>
+                    <p id="uv-index">--</p>
+                </article>
+
+                <article class="weather-card">
+                    <h3>Visibility</h3>
+                    <p id="visibility">-- km</p>
+                </article>
+
+                <article class="weather-card">
+                    <h3>Pressure</h3>
+                    <p id="pressure">-- hPa</p>
+                </article>
+
+                <article class="weather-card">
+                    <h3>Dew Point</h3>
+                    <p id="dew-point">--°</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- Daily Forecast -->
+        <section class="weather-section" aria-labelledby="daily-heading">
+            <h2 id="daily-heading">10-Day Forecast</h2>
+
+            <div id="daily-forecast">
+                <p>Daily forecasts will appear here.</p>
+            </div>
+        </section>
+
+        <!-- Sunrise and Sunset -->
+        <section class="weather-section" aria-labelledby="sun-heading">
+            <h2 id="sun-heading">Sunrise &amp; Sunset</h2>
+
+            <div class="sun-times">
+                <article class="weather-card">
+                    <h3>Sunrise</h3>
+                    <p id="sunrise">--:--</p>
+                </article>
+
+                <article class="weather-card">
+                    <h3>Sunset</h3>
+                    <p id="sunset">--:--</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- Application Status -->
+        <p id="app-status" role="status" aria-live="polite"></p>
+    </main>
+
+    <footer>
+        <p>Skycast — Weather information at a glance.</p>
+    </footer>
+</body>
+</html>
+
