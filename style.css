@@ -1,5 +1,5 @@
 
-/* ===== 1. Global Styles ===== */
+/* ===== 0. Global Styles ===== */
 
 :root {
     --background: #0b1120;
@@ -48,7 +48,7 @@ footer {
     margin-inline: auto;
 }
 
-/* ===== 2. Header ===== */
+/* ===== 1. Header ===== */
 
 .app-header {
     display: flex;
@@ -101,6 +101,75 @@ footer {
     color: var(--text-primary);
     background: var(--surface-light);
 }
+
+/*=== 2. Main navigation=== */
+.main-navigation {
+display: flex;
+justify-content: center;
+gap: 12px;
+flex-wrap: wrap;
+margin: 24px auto;
+}
+
+.nav-button {
+padding: 10px 18px;
+border: 1px solid var(--border-color, #334155);
+border-radius: 10px;
+background: transparent;
+color: inherit;
+cursor: pointer;
+font: inherit;
+transition: background-color 0.2s ease;
+}
+
+.nav-button:hover {
+background-color: rgba(255, 255, 255, 0.08);
+}
+
+.nav-button.active {
+background-color: #2563eb;
+color: #ffffff;
+border-color: #2563eb;
+}
+
+/* Screen visibility */
+.screen[hidden] {
+display: none !important;
+}
+
+.screen.active {
+display: block;
+}
+
+/* Additional screens */
+#maps-screen,
+#saved-screen,
+#settings-screen {
+max-width: 1000px;
+margin: 0 auto;
+padding: 24px;
+}
+
+/* Settings control */
+#temperature-unit {
+margin-left: 10px;
+padding: 8px;
+border-radius: 6px;
+font: inherit;
+}
+
+@media (max-width: 600px) {
+.main-navigation {
+gap: 8px;
+}
+
+.nav-button {
+    padding: 9px 12px;
+    font-size: 14px;
+}
+
+}
+
 
 /* ===== 3. Current Weather ===== */
 
