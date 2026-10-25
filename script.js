@@ -5,23 +5,30 @@ console.log(document.title);
 const navigationButtons = document.querySelectorAll(".nav-button");
 const screens = document.querySelectorAll(".screen");
 
-navigationButtons.forEach(function (button) {
-button.addEventListener("click", function () {
-const targetScreenId = button.dataset.screen;
+function showScreen(targetScreenId) {
+screens.forEach(function (screen) {
+const isTargetScreen = screen.id === targetScreenId;
 
-    screens.forEach(function (screen) {
-        screen.hidden = screen.id !== targetScreenId;
-        screen.classList.toggle("active", screen.id === targetScreenId);
-    });
-
-    navigationButtons.forEach(function (navButton) {
-        navButton.classList.remove("active");
-        navButton.removeAttribute("aria-current");
-    });
-
-    button.classList.add("active");
-    button.setAttribute("aria-current", "page");
+    screen.hidden = !isTargetScreen;
+    screen.classList.toggle("active", isTargetScreen);
 });
 
+navigationButtons.forEach(function (button) {
+    const isTargetButton = button.dataset.screen === targetScreenId;
 
+    button.classList.toggle("active", isTargetButton);
+
+    if (isTargetButton) {
+        button.setAttribute("aria-current", "page");
+    } else {
+        button.removeAttribute("aria-current");
+    }
+});
+
+}
+
+navigationButtons.forEach(function (button) {
+button.addEventListener("click", function () {
+showScreen(button.dataset.screen);
+});
 });
