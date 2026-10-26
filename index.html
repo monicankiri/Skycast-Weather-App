@@ -325,7 +325,50 @@
 
     </section>
 
+    <section id="wind-screen" class="screen" hidden>
 
+       <button type="button" class="screen-link" data-screen="wind-screen">
+         View Wind Details →
+        </button>
+
+        <h1>Wind Details</h1>
+        <p class="screen-description">
+            Explore wind speed, direction, and gusts for your location.
+        </p>
+
+        <section class="hourly-detail-grid" aria-label="Wind information">
+            <article class="hourly-detail-card">
+                <h2>Wind Speed</h2>
+                <p class="hourly-detail-icon" aria-hidden="true">💨</p>
+                <p class="hourly-detail-temperature">-- km/h</p>
+            </article>
+
+            <article class="hourly-detail-card">
+                <h2>Wind Direction</h2>
+                <p class="hourly-detail-icon" aria-hidden="true">🧭</p>
+                <p class="hourly-detail-temperature">--</p>
+            </article>
+
+            <article class="hourly-detail-card">
+                <h2>Wind Gusts</h2>
+                <p class="hourly-detail-icon" aria-hidden="true">🌬️</p>
+                <p class="hourly-detail-temperature">-- km/h</p>
+            </article>
+
+            <article class="hourly-detail-card">
+                <h2>Conditions</h2>
+                <p class="hourly-detail-icon" aria-hidden="true">🌤️</p>
+                <p class="hourly-detail-temperature">Awaiting data</p>
+        </article>
+        </section>
+
+        <p class="forecast-notice">
+            Wind measurements will appear here when Skycast is connected to a
+            weather API.
+        </p>
+
+    </section>
+    
     <!-- MAPS SCREEN -->
     <section
         id="maps-screen"
