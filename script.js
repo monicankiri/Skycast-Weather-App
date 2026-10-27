@@ -9,6 +9,7 @@ function showScreen(targetScreenId) {
 screens.forEach(function (screen) {
 const isTargetScreen = screen.id === targetScreenId;
 
+
     screen.hidden = !isTargetScreen;
     screen.classList.toggle("active", isTargetScreen);
 });
@@ -27,7 +28,9 @@ navigationButtons.forEach(function (button) {
 
 }
 
-navigationButtons.forEach(function (button) {
+const screenTriggers = document.querySelectorAll("[data-screen]");
+
+screenTriggers.forEach(function (button) {
 button.addEventListener("click", function () {
 showScreen(button.dataset.screen);
 });
