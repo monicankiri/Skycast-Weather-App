@@ -279,70 +279,94 @@ gap: 8px;
     font-weight: 600;
 }
 
-/* ===== 7. Daily Forecast and Sun Times ===== */
 
-#daily-forecast {
-    display: grid;
-    gap: 12px;
+/* ===== 7. Forecast and Detail Screens ===== */
+
+/* Screen headings and descriptions */
+.screen > h1 {
+    margin-bottom: 12px;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
 }
 
-.sun-times {
+.screen-description {
+    margin-bottom: 24px;
+    color: var(--text-secondary);
+}
+
+/* Hourly and wind detail cards */
+.hourly-detail-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
+    margin-top: 24px;
 }
 
-/* ===== 8. Status and Footer ===== */
+.hourly-detail-card {
+    min-width: 0;
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
 
-#app-status {
+.hourly-detail-card:hover {
+    transform: translateY(-3px);
+    background: var(--surface-light);
+}
+
+.hourly-detail-card h2 {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.hourly-detail-icon {
     margin-top: 16px;
-    color: var(--text-secondary);
+    font-size: 2rem;
 }
 
-footer {
-    padding-block: 32px;
-    color: var(--text-secondary);
-    text-align: center;
+.hourly-detail-temperature {
+    margin-top: 8px;
+    font-size: 1.8rem;
+    font-weight: 700;
 }
 
-/* ===== 9. Responsive Layout ===== */
+.forecast-notice {
+    margin-top: 24px;
+    padding: 16px;
+    color: var(--text-secondary);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 0.9rem;
+}
 
-@media (max-width: 760px) {
-    .app-header {
-        flex-wrap: wrap;
+/* Back and detail navigation buttons */
+.screen-link {
+    margin-bottom: 20px;
+    padding: 10px 14px;
+    color: var(--accent);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font: inherit;
+    transition: background-color 0.2s ease;
+}
+
+.screen-link:hover {
+    background: rgba(125, 211, 252, 0.1);
+}
+
+/* Responsive detail cards */
+@media (max-width: 500px) {
+    .hourly-detail-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
     }
 
-    #search-form {
-        order: 3;
-        flex-basis: 100%;
-        max-width: none;
-    }
-
-    .weather-details {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    #current-weather,
-    .weather-section {
+    .hourly-detail-card {
         padding: 20px;
     }
 }
 
-@media (max-width: 420px) {
-    .app-header {
-        gap: 12px;
-    }
-
-    #location-button {
-        padding: 10px;
-        font-size: 0.85rem;
-    }
-
-    .weather-details {
-        gap: 10px;
-    }
-
-    .weather-card {
-        padding: 14px;
-    }
-}
