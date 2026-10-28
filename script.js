@@ -25,13 +25,12 @@ navigationButtons.forEach(function (button) {
         button.removeAttribute("aria-current");
     }
 });
-
 }
-
 const screenTriggers = document.querySelectorAll("[data-screen]");
 
 screenTriggers.forEach(function (button) {
-button.addEventListener("click", function () {
-showScreen(button.dataset.screen);
+    button.addEventListener("click", function () {
+        showScreen(button.dataset.screen);
+    });
 });
-});
+
