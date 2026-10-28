@@ -159,7 +159,15 @@
                     <h3>Dew Point</h3>
                     <p id="dew-point">--°</p>
                 </article>
-
+                <article class="weather-card">
+                    <h3>Precipitation</h3>
+                    <p id="precipitation">--%</p>
+                    <button type="button"
+                    class="screen-link"
+                    data-screen="precipitation-screen">
+                    View Details →
+                </button>
+            </article>
             </div>
         </section>
         <!-- Daily Forecast Preview -->
@@ -307,7 +315,66 @@
         to a weather API.
     </p>
 
-</section>
+    </section>
+    
+    <!-- PRECIPITATION DETAILS SCREEN -->
+    <section
+        id="precipitation-screen"
+        class="screen"
+        hidden
+        aria-labelledby="precipitation-screen-title">
+
+        <button
+            type="button"
+            class="screen-link"
+            data-screen="weather-screen">
+            ← Back to Weather
+        </button>
+
+        <h1 id="precipitation-screen-title">
+            Precipitation Details
+        </h1>
+
+        <p class="screen-description">
+            Explore rainfall and the chance of precipitation in your location.
+        </p>
+
+        <div class="hourly-detail-grid">
+
+            <article class="hourly-detail-card">
+                <h2>Chance of Precipitation</h2>
+                <p class="hourly-detail-icon" aria-hidden="true">🌧️</p>
+                <p class="hourly-detail-temperature">--%</p>
+            </article>
+
+            <article class="hourly-detail-card">
+                <h2>Expected Rainfall</h2>
+                <p class="hourly-detail-icon" aria-hidden="true">💧</p>
+                <p class="hourly-detail-temperature">-- mm</p>
+            </article>
+
+            <article class="hourly-detail-card">
+                <h2>Rainfall Intensity</h2>
+                <p class="hourly-detail-icon" aria-hidden="true">🌦️</p>
+                <p class="hourly-detail-temperature">Awaiting data</p>
+            </article>
+
+            <article class="hourly-detail-card">
+                <h2>Forecast</h2>
+                <p class="hourly-detail-icon" aria-hidden="true">☁️</p>
+                <p class="hourly-detail-temperature">Unavailable</p>
+            </article>
+
+        </div>
+
+        <p class="forecast-notice">
+            Precipitation information will appear here when Skycast
+            is connected to a weather API.
+        </p>
+
+    </section>
+
+
 
 
 
