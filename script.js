@@ -38,6 +38,7 @@ const locationElement = document.getElementById("location-name");
 locationElement.textContent ="lagos, Nigeria";
 
 const weatherDescription = document.getElementById("weather-description");
+const temperatureElement = document.getElementById("temperature");
 
 let weatherCode;
 const weatherIcon = document.getElementById("weather-icon");
@@ -65,6 +66,7 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
     })
     .then(function (data) {
         const currentTemperature = data.current.temperature_2m;
+        temperatureElement.textContent = `${currentTemperature}°C`;
 
         const weatherCode = data.current.weather_code;
 
