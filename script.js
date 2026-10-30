@@ -39,6 +39,7 @@ locationElement.textContent ="lagos, Nigeria";
 
 const weatherDescription = document.getElementById("weather-description");
 const temperatureElement = document.getElementById("temperature");
+const feelsLikeElement = document.getElementById("feels-like");
 
 let weatherCode;
 const weatherIcon = document.getElementById("weather-icon");
@@ -60,14 +61,16 @@ const weatherIcons = {
     61:	"🌧️"
 };
 
-fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code&timezone=Africa%2FLagos")
+fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code,apparent_temperature&timezone=Africa%2FLagos")
     .then(function (response) {
         return response.json();
     })
     .then(function (data) {
         const currentTemperature = data.current.temperature_2m;
-        temperatureElement.textContent = `${currentTemperature}°C`;
+        const apparentTemperature = data.current.apparent_temperature;
 
+        temperatureElement.textContent = `${currentTemperature}°C`;
+        feelsLikeElement.textContent = `Feels like ${apparentTemperature}°C`;
         const weatherCode = data.current.weather_code;
 
         console.log(weatherCode);
