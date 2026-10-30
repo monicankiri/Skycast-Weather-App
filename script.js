@@ -41,6 +41,9 @@ const weatherDescription = document.getElementById("weather-description");
 const temperatureElement = document.getElementById("temperature");
 const feelsLikeElement = document.getElementById("feels-like");
 
+
+const highTemperatureElement = document.getElementById("high-temperature");
+const lowTemperatureElement = document.getElementById("low-temperature");
 let weatherCode;
 const weatherIcon = document.getElementById("weather-icon");
 
@@ -61,7 +64,7 @@ const weatherIcons = {
     61:	"🌧️"
 };
 
-fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code,apparent_temperature&timezone=Africa%2FLagos")
+fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code,apparent_temperature&daily=temperature_2m_max,temperature_2m_min&timezone=")
     .then(function (response) {
         return response.json();
     })
@@ -72,6 +75,12 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
         temperatureElement.textContent = `${currentTemperature}°C`;
         feelsLikeElement.textContent = `Feels like ${apparentTemperature}°C`;
         const weatherCode = data.current.weather_code;
+        const highestTemperature = data.daily.temperature_2m_max[0];
+
+        const lowestTemperature = data.daily.temperature_2m_min[0];
+        highTemperatureElement.textContent = `H: ${highestTemperature}°C`;
+
+        lowTemperatureElement.textContent = `L: ${lowestTemperature}°C`;
 
         console.log(weatherCode);
         const condition = weatherConditions[weatherCode] || "Unknown weather condition";
