@@ -39,19 +39,25 @@ locationElement.textContent ="lagos, Nigeria";
 
 const weatherDescription = document.getElementById("weather-description");
 
-
-const weatherData = {
-    city: "Lagos",
-    temperature: 30,
-    condition: "Partly cloudy"
-};
-
-const temperatureElement = document.getElementById("temperature");
-temperatureElement.textContent = `${weatherData.temperature}°`;
 let weatherCode;
 const weatherIcon = document.getElementById("weather-icon");
 
-
+const weatherConditions = {
+    0: "Clear Sky",
+    1: "Mainly Clear",
+    2: "Partly Cloudy",
+    3: "Overcast",
+    53: "Moderate Drizzle",
+    61: "Slight Rain"
+};
+const weatherIcons = {
+    0:  "☀️",
+    1:	"🌤️",
+    2:	"⛅",
+    3:	"☁️",
+    53: "🌦️",
+    61:	"🌧️"
+};
 
 fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code&timezone=Africa%2FLagos")
     .then(function (response) {
@@ -59,31 +65,15 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
     })
     .then(function (data) {
         const currentTemperature = data.current.temperature_2m;
-        weatherCode = data.current.weather_code;
+
+        const weatherCode = data.current.weather_code;
 
         console.log(weatherCode);
-       if (weatherCode === 53) {
-            weatherDescription.textContent = "Moderate Drizzle";
-        }
-        else if (weatherCode === 61) {
-            weatherDescription.textContent = "Slight Rain";
-        }
-        else if (weatherCode === 0) {
-            weatherDescription.textContent = "Clear Sky";
-        }
-        else if (weatherCode === 1) {
-            weatherDescription.textContent = "Mainly Clear";
-        }
-        else if (weatherCode === 2) {
-            weatherDescription.textContent = "Partly Cloudy";
-        }
-        else if (weatherCode === 3) {
-            weatherDescription.textContent = "Overcast";
-        }
-        else {
-            weatherDescription.textContent = "Unknown weather condition";
-        }
-        temperatureElement.textContent = `${currentTemperature}°`;
+        const condition = weatherConditions[weatherCode] || "Unknown weather condition";
+
+        weatherDescription.textContent = condition;
+        const icon = weatherIcons[weatherCode] || "🌡️";
+        weatherIcon.textContent = icon;
         });
 
 
