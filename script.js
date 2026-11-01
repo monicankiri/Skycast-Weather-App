@@ -43,6 +43,7 @@ const feelsLikeElement = document.getElementById("feels-like");
 const humidityElement = document.getElementById("humidity");
 const windSpeedElement = document.getElementById("wind-speed");
 const uvIndexElement = document.getElementById("uv-index");
+const visibilityElement = document.getElementById("visibility");
 
 const highTemperatureElement = document.getElementById("high-temperature");
 const lowTemperatureElement = document.getElementById("low-temperature");
@@ -66,7 +67,7 @@ const weatherIcons = {
     61:	"🌧️"
 };
 
-fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code,apparent_temperature,relative_humidity_2m,wind_speed_10m,uv_index&daily=temperature_2m_max,temperature_2m_min&timezone=Africa%2FLagos")  
+fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code,apparent_temperature,relative_humidity_2m,wind_speed_10m,uv_index,visibility&daily=temperature_2m_max,temperature_2m_min&timezone=Africa%2FLagos")  
  .then(function (response) {
         return response.json();
     })
@@ -76,11 +77,14 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
         const relativeHumidity = data.current.relative_humidity_2m;
         const windSpeed = data.current.wind_speed_10m;
         const uvIndex = data.current.uv_index;
+        const visibility = data.current.visibility;
+        const visibilityInKm = visibility / 1000;
 
         temperatureElement.textContent = `${currentTemperature}°C`;
         feelsLikeElement.textContent = `Feels like ${apparentTemperature}°C`;
         humidityElement.textContent = `Humidity: ${relativeHumidity}%`;
         windSpeedElement.textContent = `Wind Speed: ${windSpeed} km/h`;
+        visibilityElement.textContent = `Visibility: ${visibilityInKm.toFixed(2)} km`;
         uvIndexElement.textContent = `UV Index: ${uvIndex}`;
         
         const weatherCode = data.current.weather_code;
