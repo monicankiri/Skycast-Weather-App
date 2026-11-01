@@ -40,6 +40,7 @@ locationElement.textContent ="lagos, Nigeria";
 const weatherDescription = document.getElementById("weather-description");
 const temperatureElement = document.getElementById("temperature");
 const feelsLikeElement = document.getElementById("feels-like");
+const humidityElement = document.getElementById("humidity");
 
 
 const highTemperatureElement = document.getElementById("high-temperature");
@@ -64,16 +65,18 @@ const weatherIcons = {
     61:	"🌧️"
 };
 
-fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code,apparent_temperature&daily=temperature_2m_max,temperature_2m_min&timezone=")
+fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code,apparent_temperature,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min&timezone=Africa%2FLagos")
     .then(function (response) {
         return response.json();
     })
     .then(function (data) {
         const currentTemperature = data.current.temperature_2m;
         const apparentTemperature = data.current.apparent_temperature;
+        const relativeHumidity = data.current.relative_humidity_2m;
 
         temperatureElement.textContent = `${currentTemperature}°C`;
         feelsLikeElement.textContent = `Feels like ${apparentTemperature}°C`;
+        humidityElement.textContent = `Humidity: ${relativeHumidity}%`;
         const weatherCode = data.current.weather_code;
         const highestTemperature = data.daily.temperature_2m_max[0];
 
@@ -89,6 +92,7 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
         const icon = weatherIcons[weatherCode] || "🌡️";
         weatherIcon.textContent = icon;
         });
+        
 
 
 
