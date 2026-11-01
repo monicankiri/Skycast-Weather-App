@@ -45,6 +45,9 @@ const windSpeedElement = document.getElementById("wind-speed");
 const uvIndexElement = document.getElementById("uv-index");
 const visibilityElement = document.getElementById("visibility");
 const pressureElement = document.getElementById("pressure");
+const dewPointElement = document.getElementById("dew-point");
+const sunriseElement = document.getElementById("sunrise");
+const sunsetElement = document.getElementById("sunset");
 
 const highTemperatureElement = document.getElementById("high-temperature");
 const lowTemperatureElement = document.getElementById("low-temperature");
@@ -68,7 +71,7 @@ const weatherIcons = {
     61:	"🌧️"
 };
 
-fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code,apparent_temperature,relative_humidity_2m,wind_speed_10m,uv_index,visibility,surface_pressure&daily=temperature_2m_max,temperature_2m_min,&timezone=Africa%2FLagos")  
+fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code,apparent_temperature,relative_humidity_2m,wind_speed_10m,uv_index,visibility,surface_pressure,dew_point_2m&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=Africa%2FLagos")  
  .then(function (response) {
         return response.json();
     })
@@ -81,6 +84,10 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
         const visibility = data.current.visibility;
         const visibilityInKm = visibility / 1000;
         const pressure = data.current.surface_pressure;
+        const dewPoint = data.current.dew_point_2m;
+        const sunrise = data.daily.sunrise[0];
+        const sunset = data.daily.sunset[0];
+
 
         temperatureElement.textContent = `${currentTemperature}°C`;
         feelsLikeElement.textContent = `Feels like ${apparentTemperature}°C`;
@@ -89,7 +96,9 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
         pressureElement.textContent = `Pressure: ${pressure} hPa`;
         visibilityElement.textContent = `Visibility: ${visibilityInKm.toFixed(2)} km`;
         uvIndexElement.textContent = `UV Index: ${uvIndex}`;
-        
+        dewPointElement.textContent = `Dew Point: ${dewPoint}°C`;
+        sunriseElement.textContent = sunrise;
+        sunsetElement.textContent = sunset;
         const weatherCode = data.current.weather_code;
         const highestTemperature = data.daily.temperature_2m_max[0];
         const lowestTemperature = data.daily.temperature_2m_min[0];
