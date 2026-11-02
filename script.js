@@ -48,6 +48,7 @@ const pressureElement = document.getElementById("pressure");
 const dewPointElement = document.getElementById("dew-point");
 const sunriseElement = document.getElementById("sunrise");
 const sunsetElement = document.getElementById("sunset");
+const hourlyForecastElement = document.getElementById("hourly-forecast");
 
 const highTemperatureElement = document.getElementById("high-temperature");
 const lowTemperatureElement = document.getElementById("low-temperature");
@@ -71,7 +72,7 @@ const weatherIcons = {
     61:	"🌧️"
 };
 
-fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code,apparent_temperature,relative_humidity_2m,wind_speed_10m,uv_index,visibility,surface_pressure,dew_point_2m&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=Africa%2FLagos")  
+fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code,apparent_temperature,relative_humidity_2m,wind_speed_10m,uv_index,visibility,surface_pressure,dew_point_2m&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset&hourly=temperature_2m,weather_code,precipitation_probability&timezone=Africa%2FLagos")  
  .then(function (response) {
         return response.json();
     })
@@ -87,7 +88,32 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
         const dewPoint = data.current.dew_point_2m;
         const sunrise = data.daily.sunrise[0];
         const sunset = data.daily.sunset[0];
-
+        
+        const hourlyTimes = data.hourly.time;
+        const hourlyTemperatures = data.hourly.temperature_2m;
+        const hourlyWeatherCodes = data.hourly.weather_code;
+        const hourlyRainChances = data.hourly.precipitation_probability;
+        
+        
+        
+        hourlyForecastElement.innerHTML = "";
+        for (let i = 0; i < 6; i++) {
+            console.log(hourlyTimes[i]);
+            console.log(hourlyTemperatures[i]);
+            console.log(hourlyWeatherCodes[i]);
+            const icon = weatherIcons[hourlyWeatherCodes[i]] || "🌡️";
+            
+            const hourlyCard = `
+                <div class="hourly-card">
+                    <p>${hourlyTimes[i]}</p>
+                    <span>${icon}</span>
+                    <h3>${hourlyTemperatures[i]}°C</h3>
+                </div>
+            `;
+            
+            hourlyForecastElement.innerHTML += hourlyCard;
+            console.log(icon);
+        }
 
         temperatureElement.textContent = `${currentTemperature}°C`;
         feelsLikeElement.textContent = `Feels like ${apparentTemperature}°C`;
