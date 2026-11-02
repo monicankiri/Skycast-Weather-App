@@ -102,12 +102,15 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
             console.log(hourlyTemperatures[i]);
             console.log(hourlyWeatherCodes[i]);
             const icon = weatherIcons[hourlyWeatherCodes[i]] || "🌡️";
-            
+            const rainChance = hourlyRainChances[i];
+
+
             const hourlyCard = `
                 <div class="hourly-card">
                     <p>${hourlyTimes[i]}</p>
                     <span>${icon}</span>
                     <h3>${hourlyTemperatures[i]}°C</h3>
+                    <p>Rain: ${rainChance}%</p>
                 </div>
             `;
             
