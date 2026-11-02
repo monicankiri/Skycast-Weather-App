@@ -55,6 +55,7 @@ const lowTemperatureElement = document.getElementById("low-temperature");
 let weatherCode;
 const weatherIcon = document.getElementById("weather-icon");
 
+
 const weatherConditions = {
     0: "Clear Sky",
     1: "Mainly Clear",
@@ -95,22 +96,36 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
         const hourlyRainChances = data.hourly.precipitation_probability;
         
         
-        
-        hourlyForecastElement.innerHTML = "";
-        for (let i = 0; i < 6; i++) {
+        const currentTime = new Date();
+        const startIndex = hourlyTimes.findIndex(function (time) {
+            return new Date(time) >= currentTime;
+        });
+        if (startIndex === -1) {
+             hourlyForecastElement.textContent = "No upcoming hourly forecast available.";
+        }else{
+            hourlyForecastElement.innerHTML = "";
+        }    
+        for (let i = startIndex; i < startIndex + 6; i++) {
             console.log(hourlyTimes[i]);
             console.log(hourlyTemperatures[i]);
             console.log(hourlyWeatherCodes[i]);
             const icon = weatherIcons[hourlyWeatherCodes[i]] || "🌡️";
             const rainChance = hourlyRainChances[i];
+            const hour = new Date(hourlyTimes[i]);
 
+            const formattedTime = hour.toLocaleTimeString("en-NG", {
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true
+            });
 
             const hourlyCard = `
                 <div class="hourly-card">
-                    <p>${hourlyTimes[i]}</p>
+                    <p>${formattedTime}</p>
                     <span>${icon}</span>
                     <h3>${hourlyTemperatures[i]}°C</h3>
                     <p>Rain: ${rainChance}%</p>
+                    
                 </div>
             `;
             
