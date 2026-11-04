@@ -73,7 +73,7 @@ const weatherIcons = {
     61:	"🌧️"
 };
 
-fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code,apparent_temperature,relative_humidity_2m,wind_speed_10m,uv_index,visibility,surface_pressure,dew_point_2m&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset&hourly=temperature_2m,weather_code,precipitation_probability&timezone=Africa%2FLagos")  
+fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code,apparent_temperature,relative_humidity_2m,wind_speed_10m,uv_index,visibility,surface_pressure,dew_point_2m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&hourly=temperature_2m,weather_code,precipitation_probability&forecast_days=10&timezone=Africa%2FLagos")  
  .then(function (response) {
         return response.json();
     })
@@ -94,23 +94,30 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
         const hourlyTemperatures = data.hourly.temperature_2m;
         const hourlyWeatherCodes = data.hourly.weather_code;
         const hourlyRainChances = data.hourly.precipitation_probability;
+        const dailyTimes = data.daily.time;
+        const dailyWeatherCodes = data.daily.weather_code;
+        const dailyMaxTemperatures = data.daily.temperature_2m_max;
+        const dailyMinTemperatures = data.daily.temperature_2m_min;
+        const dailyForecastElement = document.getElementById("daily-forecast");
         
         
-        const currentTime = new Date();
-        const startIndex = hourlyTimes.findIndex(function (time) {
-            return new Date(time) >= currentTime;
-        });
-        if (startIndex === -1) {
-             hourlyForecastElement.textContent = "No upcoming hourly forecast available.";
-        }else{
-            hourlyForecastElement.innerHTML = "";
-        }    
+      const currentTime = new Date();
+
+    const startIndex = hourlyTimes.findIndex(function (time) {
+        return new Date(time) >= currentTime;
+    });
+
+    // HOURLY FORECAST
+    if (startIndex === -1) {
+        hourlyForecastElement.textContent =
+            "No upcoming hourly forecast available.";
+    } else {
+        hourlyForecastElement.innerHTML = "";
+
         for (let i = startIndex; i < startIndex + 6; i++) {
-            console.log(hourlyTimes[i]);
-            console.log(hourlyTemperatures[i]);
-            console.log(hourlyWeatherCodes[i]);
             const icon = weatherIcons[hourlyWeatherCodes[i]] || "🌡️";
             const rainChance = hourlyRainChances[i];
+
             const hour = new Date(hourlyTimes[i]);
 
             const formattedTime = hour.toLocaleTimeString("en-NG", {
@@ -125,13 +132,38 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
                     <span>${icon}</span>
                     <h3>${hourlyTemperatures[i]}°C</h3>
                     <p>Rain: ${rainChance}%</p>
-                    
                 </div>
             `;
-            
+
             hourlyForecastElement.innerHTML += hourlyCard;
-            console.log(icon);
         }
+    }
+
+    // 10-DAY FORECAST
+    dailyForecastElement.innerHTML = "";
+
+    for (let i = 0; i < dailyTimes.length; i++) {
+        const date = new Date(dailyTimes[i] + "T00:00:00");
+
+        const day = date.toLocaleDateString("en-NG", {
+            weekday: "short",
+            day: "numeric",
+            month: "short"
+        });
+
+        const icon = weatherIcons[dailyWeatherCodes[i]] || "🌡️";
+
+        const dailyCard = `
+            <div class="daily-card">
+                <p>${day}</p>
+                <span>${icon}</span>
+                <p>H: ${dailyMaxTemperatures[i]}°C</p>
+                <p>L: ${dailyMinTemperatures[i]}°C</p>
+            </div>
+        `;
+
+        dailyForecastElement.innerHTML += dailyCard;
+    }
 
         temperatureElement.textContent = `${currentTemperature}°C`;
         feelsLikeElement.textContent = `Feels like ${apparentTemperature}°C`;

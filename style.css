@@ -343,6 +343,18 @@ gap: 8px;
     font-size: 0.9rem;
 }
 
+#daily-forecast {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 15px;
+}
+
+.daily-card {
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+}
+
 /* Back and detail navigation buttons */
 .screen-link {
     margin-bottom: 20px;
