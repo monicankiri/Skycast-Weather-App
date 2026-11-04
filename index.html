@@ -12,7 +12,11 @@
 <title>Skycast | Weather Forecast</title>
 
 <link rel="stylesheet" href="style.css">
-<script src="script.js" defer></script>
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
 </head>
 <body>
 <!-- Application Header -->
@@ -374,37 +378,45 @@
 
     </section>
 
-
-
-
-
     <!-- MAPS SCREEN -->
     <section
         id="maps-screen"
         class="screen"
         hidden
         aria-labelledby="maps-screen-title">
+
         <h1 id="maps-screen-title">Weather Maps</h1>
 
-        <p>Explore weather maps and visual forecasts.</p>
-        <p> Interactive weather maps will be added in a later stage.</p>
-    </section>
-    <!-- SAVED LOCATIONS SCREEN -->
-    <section id="saved-screen" class="screen"
-        hidden
-        aria-labelledby="saved-screen-title">
+        <p>Explore locations and weather conditions around the world.</p>
 
-        <h1 id="saved-screen-title">Saved Locations</h1>
+        <div class="map-controls">
+            <button type="button" class="map-layer active" data-layer="temperature">
+                Temperature
+            </button>
 
-        <p>
-            Keep track of weather conditions in your favourite cities.
+            <button type="button" class="map-layer" data-layer="rain">
+                Rain
+            </button>
+
+            <button type="button" class="map-layer" data-layer="wind">
+                Wind
+            </button>
+        </div>
+        <div id="map-legend" class="map-legend">
+            <strong>Temperature</strong>
+            <span><i class="legend-dot orange"></i> Below 30°C</span>
+            <span><i class="legend-dot red"></i> 30°C or above</span>
+        </div>
+
+        <div id="weather-map" aria-label="Interactive weather map"></div>
+
+        <p id="map-status" role="status" aria-live="polite">
+            Map loading...
         </p>
 
-        <p>
-            Your saved locations feature will be added in a later stage.
-        </p>
-
     </section>
+
+
     <!-- SETTINGS SCREEN -->
     <section id="settings-screen" class="screen" hidden
         aria-labelledby="settings-screen-title">
@@ -424,6 +436,7 @@
 <footer>
     <p>Skycast — Weather information at a glance.</p>
 </footer>
-
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

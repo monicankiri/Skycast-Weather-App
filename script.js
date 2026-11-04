@@ -4,7 +4,9 @@ console.log(document.title);
 
 const navigationButtons = document.querySelectorAll(".nav-button");
 const screens = document.querySelectorAll(".screen");
-
+const dailyForecastElement = document.getElementById("daily-forecast");
+let weatherMap;
+let mapWeatherLayer;
 function showScreen(targetScreenId) {
 screens.forEach(function (screen) {
 const isTargetScreen = screen.id === targetScreenId;
@@ -13,6 +15,11 @@ const isTargetScreen = screen.id === targetScreenId;
     screen.hidden = !isTargetScreen;
     screen.classList.toggle("active", isTargetScreen);
 });
+if (targetScreenId === "maps-screen" && weatherMap) {
+    setTimeout(function () {
+        weatherMap.invalidateSize();
+    }, 100);
+}
 
 navigationButtons.forEach(function (button) {
     const isTargetButton = button.dataset.screen === targetScreenId;
@@ -52,7 +59,6 @@ const hourlyForecastElement = document.getElementById("hourly-forecast");
 
 const highTemperatureElement = document.getElementById("high-temperature");
 const lowTemperatureElement = document.getElementById("low-temperature");
-let weatherCode;
 const weatherIcon = document.getElementById("weather-icon");
 
 
@@ -98,8 +104,6 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
         const dailyWeatherCodes = data.daily.weather_code;
         const dailyMaxTemperatures = data.daily.temperature_2m_max;
         const dailyMinTemperatures = data.daily.temperature_2m_min;
-        const dailyForecastElement = document.getElementById("daily-forecast");
-        
         
       const currentTime = new Date();
 
@@ -188,7 +192,156 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
         const icon = weatherIcons[weatherCode] || "🌡️";
         weatherIcon.textContent = icon;
         });
+        // WEATHER MAP
+
+    const mapElement = document.getElementById("weather-map");
+    const mapStatus = document.getElementById("map-status");
+
+
+    const mapLocations = [
+         { name: "Lagos", lat: 6.5244, lon: 3.3792 },
+         { name: "Ikeja", lat: 6.6018, lon: 3.3515 },
+         { name: "Lekki", lat: 6.4698, lon: 3.5852 },
+         { name: "Badagry", lat: 6.4310, lon: 2.8810 },
+         { name: "Epe", lat: 6.5841, lon: 3.9834 }
+            ];
         
+        
+    if (mapElement) {
+        weatherMap = L.map("weather-map").setView([6.5244, 3.3792], 10);
+
+        L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",{
+        attribution: "Tiles &copy; Esri"}
+        ).addTo(weatherMap);
+
+        L.marker([6.5244, 3.3792])
+            .addTo(weatherMap)
+            .bindPopup("Lagos, Nigeria")
+            .openPopup();
+            mapWeatherLayer = L.layerGroup().addTo(weatherMap);
+    }
+            async function loadMapWeather(layerType) {  
+            mapWeatherLayer.clearLayers();
+
+            mapStatus.textContent = "Loading weather data...";
+ 
+            try {
+                const results = await Promise.all(
+                    mapLocations.map(async function (location) {
+                        const url = `https://api.open-meteo.com/v1/forecast?latitude=${location.lat}&longitude=${location.lon}&current=temperature_2m,precipitation,wind_speed_10m&timezone=Africa%2FLagos`;
+
+                        const response = await fetch(url);
+
+                        if (!response.ok) {
+                            throw new Error("Weather data unavailable");
+                        }
+
+                        const data = await response.json();
+
+                        return {
+                            location: location,
+                            temperature: data.current.temperature_2m,
+                            rain: data.current.precipitation,
+                            wind: data.current.wind_speed_10m
+                        };
+                    })
+                );
+
+                results.forEach(function (weather) {
+                    let value;
+                    let label;
+                    let color;
+
+                    if (layerType === "temperature") {
+                        value = weather.temperature;
+                        label = `Temperature: ${value}°C`;
+                        color = value >= 30 ? "red" : "orange";
+                    } else if (layerType === "rain") {
+                        value = weather.rain;
+                        label = `Precipitation: ${value} mm`;
+                        color = value > 0 ? "blue" : "gray";
+                    } else {
+                        value = weather.wind;
+                        label = `Wind: ${value} km/h`;
+                        color = value >= 20 ? "purple" : "green";
+                    }
+
+                    L.circleMarker(
+                        [weather.location.lat, weather.location.lon],
+                        {
+                            radius: 12,
+                            color: color,
+                            fillColor: color,
+                            fillOpacity: 0.6
+                        }
+                    )
+                    .bindPopup(`
+                        <strong>${weather.location.name}</strong><br>
+                        ${label}
+                    `)
+                    .addTo(mapWeatherLayer);
+                });
+
+                mapStatus.textContent =
+                    `${layerType} weather data loaded successfully.`;
+
+            } catch (error) {
+                mapStatus.textContent =
+                    "Unable to load weather data. Please try again.";
+                console.error(error);
+            }
+        }
+            function updateMapLegend(layerType) {
+            const legend = document.getElementById("map-legend");
+
+            if (layerType === "temperature") {
+                legend.innerHTML = `
+                    <strong>Temperature</strong>
+                    <span><i class="legend-dot orange"></i> Below 30°C</span>
+                    <span><i class="legend-dot red"></i> 30°C or above</span>
+                `;
+            } else if (layerType === "rain") {
+                legend.innerHTML = `
+                    <strong>Rainfall</strong>
+                    <span><i class="legend-dot blue"></i> Rain detected</span>
+                    <span><i class="legend-dot gray"></i> No rain detected</span>
+                `;
+            } else {
+                legend.innerHTML = `
+                    <strong>Wind Speed</strong>
+                    <span><i class="legend-dot purple"></i> 20 km/h or above</span>
+                    <span><i class="legend-dot green"></i> Below 20 km/h</span>
+                `;
+            }
+        }
+         if (mapWeatherLayer) {
+            updateMapLegend("temperature");
+            loadMapWeather("temperature");
+        }
+          
+
+
+const mapLayerButtons = document.querySelectorAll(".map-layer");
+
+mapLayerButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+        mapLayerButtons.forEach(function (item) {
+            item.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+       const selectedLayer = button.dataset.layer;
+
+        updateMapLegend(selectedLayer);
+
+        if (mapWeatherLayer) {
+            loadMapWeather(selectedLayer);
+        }
+    
+    });
+});
+   
 
 
 
