@@ -321,7 +321,7 @@
 
     </section>
     
-    <!-- PRECIPITATION DETAILS SCREEN -->
+        <!-- PRECIPITATION DETAILS SCREEN -->
     <section
         id="precipitation-screen"
         class="screen"
@@ -348,36 +348,35 @@
             <article class="hourly-detail-card">
                 <h2>Chance of Precipitation</h2>
                 <p class="hourly-detail-icon" aria-hidden="true">🌧️</p>
-                <p class="hourly-detail-temperature">--%</p>
+                <p id="precipitation-chance" class="hourly-detail-temperature">--%</p>
             </article>
 
             <article class="hourly-detail-card">
                 <h2>Expected Rainfall</h2>
                 <p class="hourly-detail-icon" aria-hidden="true">💧</p>
-                <p class="hourly-detail-temperature">-- mm</p>
+                <p id="expected-rainfall" class="hourly-detail-temperature">-- mm</p>
             </article>
 
             <article class="hourly-detail-card">
                 <h2>Rainfall Intensity</h2>
                 <p class="hourly-detail-icon" aria-hidden="true">🌦️</p>
-                <p class="hourly-detail-temperature">Awaiting data</p>
+                <p id="rainfall-intensity" class="hourly-detail-temperature">Awaiting data</p>
             </article>
 
             <article class="hourly-detail-card">
                 <h2>Forecast</h2>
                 <p class="hourly-detail-icon" aria-hidden="true">☁️</p>
-                <p class="hourly-detail-temperature">Unavailable</p>
+                <p id="precipitation-forecast" class="hourly-detail-temperature">Awaiting data</p>
             </article>
 
         </div>
 
-        <p class="forecast-notice">
-            Precipitation information will appear here when Skycast
-            is connected to a weather API.
+        <p id="precipitation-notice" class="forecast-notice">
+            Loading precipitation information...
         </p>
 
     </section>
-
+    
     <!-- MAPS SCREEN -->
     <section
         id="maps-screen"

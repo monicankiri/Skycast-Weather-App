@@ -79,8 +79,8 @@ const weatherIcons = {
     61:	"🌧️"
 };
 
-fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code,apparent_temperature,relative_humidity_2m,wind_speed_10m,uv_index,visibility,surface_pressure,dew_point_2m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&hourly=temperature_2m,weather_code,precipitation_probability&forecast_days=10&timezone=Africa%2FLagos")  
- .then(function (response) {
+fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code,apparent_temperature,relative_humidity_2m,wind_speed_10m,uv_index,visibility,surface_pressure,dew_point_2m,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,precipitation_probability_max&hourly=temperature_2m,weather_code,precipitation_probability,precipitation&forecast_days=10&timezone=Africa%2FLagos")
+.then(function (response) {
         return response.json();
     })
     .then(function (data) {
@@ -100,6 +100,13 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
         const hourlyTemperatures = data.hourly.temperature_2m;
         const hourlyWeatherCodes = data.hourly.weather_code;
         const hourlyRainChances = data.hourly.precipitation_probability;
+        const hourlyRainfall = data.hourly.precipitation;
+
+        const currentRainfall = data.current.precipitation;
+
+        const dailyRainfall = data.daily.precipitation_sum;
+
+        const dailyRainChance = data.daily.precipitation_probability_max;
         const dailyTimes = data.daily.time;
         const dailyWeatherCodes = data.daily.weather_code;
         const dailyMaxTemperatures = data.daily.temperature_2m_max;
@@ -110,6 +117,42 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
     const startIndex = hourlyTimes.findIndex(function (time) {
         return new Date(time) >= currentTime;
     });
+    // Precipitation information
+    const precipitationChance = hourlyRainChances[startIndex];
+
+    const expectedRainfall = dailyRainfall[0];
+
+    let rainfallIntensity;
+
+    if (currentRainfall === 0) {
+        rainfallIntensity = "No rainfall";
+    } else if (currentRainfall < 2) {
+        rainfallIntensity = "Light rainfall";
+    } else if (currentRainfall < 7) {
+        rainfallIntensity = "Moderate rainfall";
+    } else {
+        rainfallIntensity = "Heavy rainfall";
+    }
+
+    // Update precipitation screen
+    document.getElementById("precipitation-chance").textContent =
+        precipitationChance + "%";
+
+    document.getElementById("expected-rainfall").textContent =
+        expectedRainfall + " mm";
+
+    document.getElementById("rainfall-intensity").textContent =
+        rainfallIntensity;
+
+    document.getElementById("precipitation-forecast").textContent =
+        dailyRainChance[0] > 50
+            ? "Rain likely"
+            : dailyRainChance[0] > 0
+                ? "Low chance of rain"
+                : "No rain expected";
+
+    document.getElementById("precipitation-notice").textContent =
+        "Today's expected rainfall: " + expectedRainfall + " mm.";
 
     // HOURLY FORECAST
     if (startIndex === -1) {
