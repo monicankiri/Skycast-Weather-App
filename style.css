@@ -418,6 +418,98 @@ font: inherit;
     color: white;
 }
 
+/* SAVED LOCATIONS SCREEN */
+
+.saved-location-search {
+    margin: 24px 0;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.saved-location-search label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.search-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.search-controls input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.search-controls button {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.search-controls button:hover {
+    background: #1d4ed8;
+}
+
+#saved-location-status {
+    margin: 16px 0;
+    color: #64748b;
+}
+
+#saved-locations-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.saved-location-card {
+    display: flex;
+    justify-content: space-between;
+    color: #1f2937;
+    align-items: center;
+    gap: 12px;
+    padding: 18px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+}
+
+.saved-location-card h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.saved-locations-list .saved-location-card p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+.saved-location-card button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: #fee2e2;
+    color: #b91c1c;
+    cursor: pointer;
+}
+
+.saved-location-card button:hover {
+    background: #fecaca;
+}
+
+/* Mobile responsiveness */
+
 /* Back and detail navigation buttons */
 .screen-link {
     margin-bottom: 20px;
@@ -460,6 +552,19 @@ gap: 8px;
     padding: 9px 12px;
     font-size: 14px;
 }
+
+ .search-controls {
+    
+    flex-direction: column;
+    }
+
+    .search-controls button {
+        width: 100%;
+    }
+
+    #saved-locations-list {
+        grid-template-columns: 1fr;
+    }
 
 
 }

@@ -384,6 +384,93 @@ mapLayerButtons.forEach(function (button) {
     
     });
 });
+// SAVED LOCATIONS
+
+const savedCityInput = document.getElementById("saved-city-input");
+const saveCityButton = document.getElementById("save-city-button");
+const savedLocationsList = document.getElementById("saved-locations-list");
+const savedLocationStatus = document.getElementById("saved-location-status");
+
+// Load previously saved cities
+let savedLocations = JSON.parse(
+    localStorage.getItem("skycastSavedLocations")
+) || [];
+
+// Display saved cities
+function displaySavedLocations() {
+    savedLocationsList.innerHTML = "";
+
+    if (savedLocations.length === 0) {
+        savedLocationStatus.textContent = "You have no saved locations yet.";
+        return;
+    }
+
+    savedLocationStatus.textContent = "Your saved locations:";
+
+    savedLocations.forEach(function (city, index) {
+        const cityCard = document.createElement("article");
+        cityCard.className = "saved-location-card";
+
+        const cityName = document.createElement("h2");
+        cityName.textContent = city;
+
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "Remove";
+        removeButton.type = "button";
+
+        removeButton.addEventListener("click", function () {
+            savedLocations.splice(index, 1);
+
+            localStorage.setItem(
+                "skycastSavedLocations",
+                JSON.stringify(savedLocations)
+            );
+
+            displaySavedLocations();
+        });
+
+        cityCard.appendChild(cityName);
+        cityCard.appendChild(removeButton);
+
+        savedLocationsList.appendChild(cityCard);
+    });
+}
+
+// Save a new city
+saveCityButton.addEventListener("click", function () {
+    const city = savedCityInput.value.trim();
+
+    if (city === "") {
+        savedLocationStatus.textContent = "Please enter a city name.";
+        return;
+    }
+
+    const cityExists = savedLocations.some(function (savedCity) {
+        return savedCity.toLowerCase() === city.toLowerCase();
+    });
+
+    if (cityExists) {
+        savedLocationStatus.textContent = "This city is already saved.";
+        return;
+    }
+
+    savedLocations.push(city);
+
+    localStorage.setItem(
+        "skycastSavedLocations",
+        JSON.stringify(savedLocations)
+    );
+
+    savedCityInput.value = "";
+
+    displaySavedLocations();
+
+    savedLocationStatus.textContent = city + " has been saved.";
+});
+
+// Display saved cities when the app opens
+displaySavedLocations();
+
    
 
 

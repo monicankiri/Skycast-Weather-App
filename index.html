@@ -413,7 +413,44 @@
             Map loading...
         </p>
 
+        </section>
+        <section
+        id="saved-screen"
+        class="screen"
+        hidden
+        aria-labelledby="saved-screen-title">
+
+    <h1 id="saved-screen-title">Saved Locations</h1>
+
+    <p class="screen-description">
+        Keep track of the places you want to monitor.
+    </p>
+
+    <div class="saved-location-search">
+        <label for="saved-city-input">Add a city</label>
+
+        <div class="search-controls">
+            <input
+                type="text"
+                id="saved-city-input"
+                placeholder="Enter a city name">
+
+            <button type="button" id="save-city-button">
+                Save Location
+            </button>
+        </div>
+    </div>
+
+    <p id="saved-location-status" role="status" aria-live="polite">
+        Your saved locations will appear here.
+    </p>
+
+    <div id="saved-locations-list">
+        <!-- Saved locations will be displayed here -->
+    </div>
+
     </section>
+
 
 
     <!-- SETTINGS SCREEN -->
