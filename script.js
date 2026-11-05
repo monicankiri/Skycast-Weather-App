@@ -1,5 +1,8 @@
+// ==========================================
+// 1. APPLICATION INITIALISATION
+// Starts Skycast and selects main page elements
+// ==========================================
 console.log("Skycast is starting");
-
 console.log(document.title);
 
 const navigationButtons = document.querySelectorAll(".nav-button");
@@ -7,6 +10,48 @@ const screens = document.querySelectorAll(".screen");
 const dailyForecastElement = document.getElementById("daily-forecast");
 let weatherMap;
 let mapWeatherLayer;
+
+// ==========================================
+// TEMPERATURE SETTINGS
+// Controls Celsius and Fahrenheit display
+// ==========================================
+
+const temperatureUnitSelect = document.getElementById("temperature-unit");
+
+let temperatureUnit = localStorage.getItem("skycastTemperatureUnit") || "celsius";
+
+function convertTemperature(celsius) {
+    if (temperatureUnit === "fahrenheit") {
+        return (celsius * 9 / 5) + 32;
+    }
+
+    return celsius;
+}
+
+function formatTemperature(celsius) {
+    const converted = convertTemperature(celsius);
+    const symbol = temperatureUnit === "fahrenheit" ? "°F" : "°C";
+
+    return `${Math.round(converted)}${symbol}`;
+}
+
+// Restore the saved temperature preference
+temperatureUnitSelect.value = temperatureUnit;
+
+temperatureUnitSelect.addEventListener("change", function () {
+    temperatureUnit = temperatureUnitSelect.value;
+
+    localStorage.setItem("skycastTemperatureUnit", temperatureUnit);
+
+    // Refresh the displayed weather using the selected unit
+    loadWeather(currentLatitude, currentLongitude, currentCityName);
+});
+
+// ==========================================
+// 2. SCREEN NAVIGATION
+// Switches between the different app screens
+// ==========================================
+
 function showScreen(targetScreenId) {
 screens.forEach(function (screen) {
 const isTargetScreen = screen.id === targetScreenId;
@@ -40,6 +85,10 @@ screenTriggers.forEach(function (button) {
         showScreen(button.dataset.screen);
     });
 });
+// ==========================================
+// 3. WEATHER ELEMENT SELECTION
+// Connects JavaScript to weather elements in HTML
+// ==========================================
 
 const locationElement = document.getElementById("location-name");
 locationElement.textContent ="lagos, Nigeria";
@@ -61,6 +110,10 @@ const highTemperatureElement = document.getElementById("high-temperature");
 const lowTemperatureElement = document.getElementById("low-temperature");
 const weatherIcon = document.getElementById("weather-icon");
 
+// ==========================================
+// 4. WEATHER CONDITIONS AND ICONS
+// Converts weather codes into descriptions and icons
+// ==========================================
 
 const weatherConditions = {
     0: "Clear Sky",
@@ -79,8 +132,24 @@ const weatherIcons = {
     61:	"🌧️"
 };
 
-fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,weather_code,apparent_temperature,relative_humidity_2m,wind_speed_10m,uv_index,visibility,surface_pressure,dew_point_2m,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,precipitation_probability_max&hourly=temperature_2m,weather_code,precipitation_probability,precipitation&forecast_days=10&timezone=Africa%2FLagos")
-.then(function (response) {
+let currentLatitude = 6.5244;
+let currentLongitude = 3.3792;
+let currentCityName = "Lagos, Nigeria";
+
+// ==========================================
+// 5. WEATHER DATA RETRIEVAL AND DISPLAY
+// Fetches weather data and updates the dashboard
+// ==========================================
+
+function loadWeather(latitude, longitude, cityName) {
+    currentLatitude = latitude;
+    currentLongitude = longitude;
+    currentCityName = cityName;
+
+    locationElement.textContent = cityName;
+
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code,apparent_temperature,relative_humidity_2m,wind_speed_10m,uv_index,visibility,surface_pressure,dew_point_2m,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,precipitation_probability_max&hourly=temperature_2m,weather_code,precipitation_probability,precipitation&forecast_days=10&timezone=auto`)
+    .then(function (response) {
         return response.json();
     })
     .then(function (data) {
@@ -117,6 +186,7 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
     const startIndex = hourlyTimes.findIndex(function (time) {
         return new Date(time) >= currentTime;
     });
+
     // Precipitation information
     const precipitationChance = hourlyRainChances[startIndex];
 
@@ -177,7 +247,7 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
                 <div class="hourly-card">
                     <p>${formattedTime}</p>
                     <span>${icon}</span>
-                    <h3>${hourlyTemperatures[i]}°C</h3>
+                    <h3>${formatTemperature(hourlyTemperatures[i])}</h3>
                     <p>Rain: ${rainChance}%</p>
                 </div>
             `;
@@ -204,29 +274,29 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
             <div class="daily-card">
                 <p>${day}</p>
                 <span>${icon}</span>
-                <p>H: ${dailyMaxTemperatures[i]}°C</p>
-                <p>L: ${dailyMinTemperatures[i]}°C</p>
+              <p>H: ${formatTemperature(dailyMaxTemperatures[i])}</p>
+              <p>L: ${formatTemperature(dailyMinTemperatures[i])}</p>
             </div>
         `;
 
         dailyForecastElement.innerHTML += dailyCard;
     }
 
-        temperatureElement.textContent = `${currentTemperature}°C`;
-        feelsLikeElement.textContent = `Feels like ${apparentTemperature}°C`;
+        temperatureElement.textContent = formatTemperature(currentTemperature);
+        feelsLikeElement.textContent = `Feels like ${formatTemperature(apparentTemperature)}`;
         humidityElement.textContent = `Humidity: ${relativeHumidity}%`;
         windSpeedElement.textContent = `Wind Speed: ${windSpeed} km/h`;
         pressureElement.textContent = `Pressure: ${pressure} hPa`;
         visibilityElement.textContent = `Visibility: ${visibilityInKm.toFixed(2)} km`;
         uvIndexElement.textContent = `UV Index: ${uvIndex}`;
-        dewPointElement.textContent = `Dew Point: ${dewPoint}°C`;
+        dewPointElement.textContent = `Dew Point: ${formatTemperature(dewPoint)}`;
         sunriseElement.textContent = sunrise;
         sunsetElement.textContent = sunset;
         const weatherCode = data.current.weather_code;
         const highestTemperature = data.daily.temperature_2m_max[0];
         const lowestTemperature = data.daily.temperature_2m_min[0];
-        highTemperatureElement.textContent = `H: ${highestTemperature}°C`;
-        lowTemperatureElement.textContent = `L: ${lowestTemperature}°C`;
+        highTemperatureElement.textContent = `H: ${formatTemperature(highestTemperature)}`;
+lowTemperatureElement.textContent = `L: ${formatTemperature(lowestTemperature)}`;
 
         console.log(weatherCode);
         const condition = weatherConditions[weatherCode] || "Unknown weather condition";
@@ -235,7 +305,17 @@ fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&c
         const icon = weatherIcons[weatherCode] || "🌡️";
         weatherIcon.textContent = icon;
         });
-        // WEATHER MAP
+    }
+    // ==========================================
+// 6. DEFAULT WEATHER
+// Loads Lagos weather when Skycast starts
+// ==========================================
+
+    loadWeather(6.5244, 3.3792, "Lagos, Nigeria");
+    // ==========================================
+    // 7. WEATHER MAP
+    // Displays weather conditions across locations
+    // ==========================================
 
     const mapElement = document.getElementById("weather-map");
     const mapStatus = document.getElementById("map-status");
@@ -384,20 +464,31 @@ mapLayerButtons.forEach(function (button) {
     
     });
 });
-// SAVED LOCATIONS
+// ==========================================
+// 8. SAVED LOCATIONS
+// Allows users to save, view and remove cities
+// ==========================================
 
 const savedCityInput = document.getElementById("saved-city-input");
 const saveCityButton = document.getElementById("save-city-button");
 const savedLocationsList = document.getElementById("saved-locations-list");
 const savedLocationStatus = document.getElementById("saved-location-status");
 
-// Load previously saved cities
 let savedLocations = JSON.parse(
     localStorage.getItem("skycastSavedLocations")
 ) || [];
 
-// Display saved cities
+// Save locations to browser storage
+function storeSavedLocations() {
+    localStorage.setItem(
+        "skycastSavedLocations",
+        JSON.stringify(savedLocations)
+    );
+}
+
+// Display saved locations
 function displaySavedLocations() {
+
     savedLocationsList.innerHTML = "";
 
     if (savedLocations.length === 0) {
@@ -408,71 +499,118 @@ function displaySavedLocations() {
     savedLocationStatus.textContent = "Your saved locations:";
 
     savedLocations.forEach(function (city, index) {
+
         const cityCard = document.createElement("article");
         cityCard.className = "saved-location-card";
 
         const cityName = document.createElement("h2");
-        cityName.textContent = city;
+        cityName.textContent = city.name + ", " + city.country;
+
+        const viewButton = document.createElement("button");
+        viewButton.textContent = "View Weather";
+        viewButton.type = "button";
+
+        viewButton.addEventListener("click", function () {
+            loadWeather(city.latitude, city.longitude, city.name);
+            showScreen("weather-screen");
+        });
 
         const removeButton = document.createElement("button");
         removeButton.textContent = "Remove";
         removeButton.type = "button";
 
         removeButton.addEventListener("click", function () {
+
             savedLocations.splice(index, 1);
 
-            localStorage.setItem(
-                "skycastSavedLocations",
-                JSON.stringify(savedLocations)
-            );
-
+            storeSavedLocations();
             displaySavedLocations();
+
         });
 
         cityCard.appendChild(cityName);
+        cityCard.appendChild(viewButton);
         cityCard.appendChild(removeButton);
 
         savedLocationsList.appendChild(cityCard);
+
     });
 }
 
-// Save a new city
-saveCityButton.addEventListener("click", function () {
-    const city = savedCityInput.value.trim();
+// Search for a city using Open-Meteo Geocoding
+async function findCity(cityName) {
 
-    if (city === "") {
+    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&language=en&format=json`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error("Unable to search for this city.");
+    }
+
+    const data = await response.json();
+
+    if (!data.results || data.results.length === 0) {
+        throw new Error("City not found. Try another name.");
+    }
+
+    return data.results[0];
+}
+
+// Save a city
+saveCityButton.addEventListener("click", async function () {
+
+    const cityName = savedCityInput.value.trim();
+
+    if (cityName === "") {
         savedLocationStatus.textContent = "Please enter a city name.";
         return;
     }
 
-    const cityExists = savedLocations.some(function (savedCity) {
-        return savedCity.toLowerCase() === city.toLowerCase();
-    });
+    saveCityButton.disabled = true;
+    savedLocationStatus.textContent = "Searching for city...";
 
-    if (cityExists) {
-        savedLocationStatus.textContent = "This city is already saved.";
-        return;
+    try {
+
+        const city = await findCity(cityName);
+
+        const alreadySaved = savedLocations.some(function (savedCity) {
+            return savedCity.name.toLowerCase() === city.name.toLowerCase()
+                && savedCity.country === city.country;
+        });
+
+        if (alreadySaved) {
+            savedLocationStatus.textContent = "This city is already saved.";
+            return;
+        }
+
+        savedLocations.push({
+            name: city.name,
+            country: city.country,
+            latitude: city.latitude,
+            longitude: city.longitude
+        });
+
+        storeSavedLocations();
+
+        savedCityInput.value = "";
+
+        displaySavedLocations();
+
+        savedLocationStatus.textContent =
+            city.name + " has been saved successfully.";
+
+    } catch (error) {
+
+        savedLocationStatus.textContent = error.message;
+
+    } finally {
+
+        saveCityButton.disabled = false;
+
     }
 
-    savedLocations.push(city);
-
-    localStorage.setItem(
-        "skycastSavedLocations",
-        JSON.stringify(savedLocations)
-    );
-
-    savedCityInput.value = "";
-
-    displaySavedLocations();
-
-    savedLocationStatus.textContent = city + " has been saved.";
 });
 
-// Display saved cities when the app opens
+// Display saved locations when the app opens
 displaySavedLocations();
-
-   
-
-
-
-
